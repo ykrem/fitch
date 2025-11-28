@@ -13,9 +13,7 @@
 #let spe = formula(1,"UTIL subproof end") // ends a subproof
 #let asm = formula(1,"UTIL assumption line") // an assumption line
 
-#let spb = formula(1,"UTIL subproof break") // breaks two subproofs of the same depth
-
-#let utils = (sps, spe, asm, spb)
+#let utils = (sps, spe, asm)
 
 // parse a single formula; use internally
 // note - can't parse on input because context is required for index insertion
@@ -78,6 +76,10 @@
     }
 
   }
+
+  let last = formulas.last()
+
+  assert((last not in utils) or (last == spe), message: "Can't end the proof with a utility line other than!")
 
   return formulas
   

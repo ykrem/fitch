@@ -1,8 +1,10 @@
-- implement gap between two consecutive subproofs of the same depth (clip frame line in every depth?)
+- ~~implement gap between two consecutive subproofs of the same depth (clip frame line in every depth?)~~ scrapped for the restructuring
 - fix dependence on font size and odd constantage
 - implement dynamic or custom asm line length
 - add customization
-- make it make sense
+- ~~make it make sense~~ actually impossible. can use some tidying I guess
 - restrict imports
-- rethink structure to fit asb lines: heights, lengths and indentation
+- ~~rethink structure to fit asb lines: heights, lengths and indentation; discard asm-spacing, shorten height of first subproof framelines~~ done (scratched spb)
 - model [fitch](https://github.com/OpenLogicProject/fitch)?
+- fix alignment dependence fuckery
+- fix versioning

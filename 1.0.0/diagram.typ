@@ -1,5 +1,5 @@
-#import "../src/formula.typ": *
-#import "../src/frame.typ": *
+#import "formula.typ": *
+#import "frame.typ": *
 
 #let indices(fms) = {
   
@@ -8,7 +8,7 @@
     return stack(
       dir: ttb,
       spacing: height - font-size + 3.5pt,
-      ..fms.map(it => move(dy: font-size, it.index))
+      ..fms.map(it => move(dy: font-size, text(size: 11pt, it.index))) // fix larger text
     )
 }
 
@@ -26,13 +26,13 @@
 #let diagram(fms) = {
 
   let psd = parse(fms).filter(x =>
-  x not in (frame-space, asm-spacing) and
+  x != spacing and
   x not in utils // I hate this
   )
 
   stack(
     dir: ltr,
-    spacing: 10pt,
+    spacing: 11pt,
     indices(psd),
     frame(fms),
     rules(psd)
