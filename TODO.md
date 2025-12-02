@@ -1,6 +1,6 @@
 - ~~implement gap between two consecutive subproofs of the same depth (clip frame line in every depth?)~~ scrapped for the restructuring
 - fix dependence on font size and odd constantage
-- implement dynamic or custom asm line length
+- implement dynamic or custom asm line length (useless?)
 - add customization
 - ~~make it make sense~~ actually impossible. can use some tidying I guess
 - restrict imports

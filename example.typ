@@ -32,7 +32,3 @@ spe,
 ($not not(not p or not q)$, $not I quad 2,14$),
 ($(not p or not q)$, $not E quad 15$)
 ))
-Remains private for now.
-
-// perhaps there's a better way to note assumptions and subproofs?
-
