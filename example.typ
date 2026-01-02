@@ -62,7 +62,7 @@ Done!
 #pagebreak()
 
 
-Another one: $tack (p or not p)$
+== Excluded Middle: $tack (p or not p)$
 
 #ded((
 sps,
@@ -74,10 +74,10 @@ sps,
     ($(p or not p)$, $or I quad 2$),
     ($tack.t$, $tack.t I quad 1,3$),
   spe,
-  ($not p$, $not I quad 5 2-4$),
+  ($not p$, $not I quad 2-4$),
   ($(p or not p)$, $or I quad 5$),
   ($tack.t$, $tack.t I quad 1,6$),
 spe,
 ($not not (p or not p)$, $not I quad 1-7$),
-($p or not p$, $not E 8$)
+($p or not p$, $not E quad 8$)
 ))

@@ -8,6 +8,7 @@
 - custom auto indexation using typst's indexation capabilities; nested indexation for subproofs? that'll be pretty cool! So - implementation of indexation schemes
 - add the option to manually define asm-lines. can either "obey" to dynamic, ignore it, or be settable.
 - asm-mode is either a constant or "dynamic"; could maybe add some "curved length" sometime (just a composition of the measure part with some function of a domain... idk, range of the interval \(0,1\]). Perhaps "dynamic" itself should be non-linear.
+- are the charts too small? sizing customization would be complicated...
 
 ## QOL
 - write the [README](README.md)

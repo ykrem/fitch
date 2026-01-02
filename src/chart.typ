@@ -100,7 +100,8 @@
 
 }
 
-#let frame(fl-model, asm-mode, lines) = context {
+// constructs the chart
+#let chart(fl-model, asm-mode, lines) = context {
 
   let arr = frame-as-array(lines, fl-model)
   let formulas = lines.filter(x => x not in utils)
@@ -118,35 +119,46 @@
     }
   }
 
-  let out = ()
+  let table = ()
 
   for (fl-row, formula) in merged {
 
-    let move-left = 0em
-    if fl-row.last().is-asm {move-left = fl-row.last().asm-length}
-    let new-line = stack(
-      dir: ltr,
-      spacing: .75em,
-      ..fl-row.map(x => align(left+bottom, fl-display(x))),
-      align(horizon, move(dx: -(move-left + .375em), formula.equation))
-      )
-    out.push(new-line)
+    let partition = fl-row.map(it => fl-model.thick + .75em) // length partition of the row
+    partition.last() = .375em // last frameline in row
+    partition.push(calc.max(
+      measure(formula.equation).width,
+      if fl-row.last().is-asm {measure(h(fl-row.last().asm-length)).width}
+      else {-1pt}
+      )) // cursed
+    // length of equation + frame
+
+    let new-line = grid(
+      columns: partition,
+      rows: fl-model.length,
+      align: left+bottom,
+      stroke: none,
+      ..fl-row.map(it => fl-display(it)),
+      grid.cell(align: left+horizon, formula.equation)
+
+    )
+    table.push(new-line)
   }
 
   let indices = formulas.map(it => it.index)
   let rules = formulas.map(it => it.rule)
 
   let longest-index = calc.max(..indices.map(it => measure(it).width))
-  let longest-line = calc.max(..out.map(it => measure(it).width))
+  let longest-line = calc.max(..table.map(it => measure(it).width))
   let longest-rule = calc.max(..rules.map(it => measure(it).width))
 
-  let rows = array.zip(indices, out, rules)
+  let rows = array.zip(indices, table, rules)
 
   return grid(
     columns: (longest-index, longest-line, longest-rule),
     rows: fl-model.length,
     align: left+horizon,
-    column-gutter: .5em,
+    column-gutter: (.5em,2em),
+    stroke: none,
     ..rows.flatten()
   )
 
