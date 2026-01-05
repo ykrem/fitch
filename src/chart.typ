@@ -6,33 +6,33 @@
 
   let frm = ()
   let new = (fl-model,)
-  let is-asm = (false,)
+  let is-assume = (false,)
 
   for line in lines {
 
-    if line == sps {
+    if line == start {
 
-      if is-asm.last() {
+      if is-assume.last() {
         let fl = fl-model
         fl.insert("is-short", true)
         new.push(fl)
         }
         
       else {new.push(fl-model)}
-      is-asm.push(false)
+      is-assume.push(false)
 
     }
 
-    else if line == spe {
+    else if line == end {
       
       let _ = new.pop()
-      let _ = is-asm.pop()
+      let _ = is-assume.pop()
       
     }
 
-    else if line == asm {
-      frm.last().last().insert("is-asm", true)
-      is-asm.last() = true
+    else if line == assume {
+      frm.last().last().insert("is-assume", true)
+      is-assume.last() = true
     }
 
     // is a visible line
@@ -49,15 +49,15 @@
 
 
 // depreciated - will be removed asap
-#let frame-old(fl-model, asm-mode, lines) = context {
+#let chart-old(fl-model, assumption-mode, lines) = context {
 
   let arr = frame-as-array(lines, fl-model)
   let formulas = lines.filter(x => x not in utils)
   let merged = array.zip(arr, formulas)
 
-  if asm-mode == "dynamic" {
+  if assumption-mode == "dynamic" {
     for i in range(merged.len()) {
-      merged.at(i).at(0).last().insert("asm-length", measure(merged.at(i).at(1).equation).width + 1em) // cursed
+      merged.at(i).at(0).last().insert("assume-length", measure(merged.at(i).at(1).equation).width + 1em) // cursed
     }
   } // LFGGGGG
 
@@ -65,14 +65,14 @@
 
   // Another two possible implementations: 
   //  - throwing the same line in the same conditional in the loop below
-  //  - defining is-dynamic = 1 if dynamic, 0 if manual, then in each iteration of the loop set the current fl-row.last... to is-dynamic * measure... + 1-is-dynamic * fl-model asmlength... quite ugly, and will require the loop the use 
+  //  - defining is-dynamic = 1 if dynamic, 0 if fixed, then in each iteration of the loop set the current fl-row.last... to is-dynamic * measure... + 1-is-dynamic * fl-model assumelength... quite ugly, and will require the loop the use 
 
   // oddly enough, using merged.map(...) doesn't work!
 
-  else if asm-mode == "longest" {
-    let longest = calc.max(..formulas.map(it => measure(it.equation).width))
+  else if assumption-mode == "widest" {
+    let widest = calc.max(..formulas.map(it => measure(it.equation).width))
     for i in range(merged.len()) {
-      merged.at(i).at(0).last().insert("asm-length", longest + 1em)
+      merged.at(i).at(0).last().insert("assume-length", widest + 1em)
     }
   }
   
@@ -82,7 +82,7 @@
   for (fl-row, formula) in merged {
 
     let move-left = 0em
-    if fl-row.last().is-asm {move-left = fl-row.last().asm-length}
+    if fl-row.last().is-assume {move-left = fl-row.last().assume-length}
     let new-line = stack(
       dir: ltr,
       spacing: 1em,
@@ -101,21 +101,21 @@
 }
 
 // constructs the chart
-#let chart(fl-model, asm-mode, lines) = context {
+#let chart(fl-model, assumption-mode, lines) = context {
 
   let arr = frame-as-array(lines, fl-model)
   let formulas = lines.filter(x => x not in utils)
   let merged = array.zip(arr, formulas)
 
-  if asm-mode == "dynamic" {
+  if assumption-mode == "dynamic" {
     for i in range(merged.len()) {
-      merged.at(i).at(0).last().insert("asm-length", measure(merged.at(i).at(1).equation).width + 1em) // cursed, couldn't find another way
+      merged.at(i).at(0).last().insert("assume-length", measure(merged.at(i).at(1).equation).width + 1em) // cursed, couldn't find another way
     }
   }
-  else if asm-mode == "longest" {
-    let longest = calc.max(..formulas.map(it => measure(it.equation).width))
+  else if assumption-mode == "widest" {
+    let widest = calc.max(..formulas.map(it => measure(it.equation).width))
     for i in range(merged.len()) {
-      merged.at(i).at(0).last().insert("asm-length", longest + 1em)
+      merged.at(i).at(0).last().insert("assume-length", widest + 1em)
     }
   }
 
@@ -127,14 +127,14 @@
     partition.last() = .375em // last frameline in row
     partition.push(calc.max(
       measure(formula.equation).width,
-      if fl-row.last().is-asm {measure(h(fl-row.last().asm-length)).width}
+      if fl-row.last().is-assume {measure(h(fl-row.last().assume-length)).width}
       else {-1pt}
       )) // cursed
     // length of equation + frame
 
     let new-line = grid(
       columns: partition,
-      rows: fl-model.length,
+      rows: fl-model.height,
       align: left+bottom,
       stroke: none,
       ..fl-row.map(it => fl-display(it)),
@@ -147,17 +147,17 @@
   let indices = formulas.map(it => it.index)
   let rules = formulas.map(it => it.rule)
 
-  let longest-index = calc.max(..indices.map(it => measure(it).width))
-  let longest-line = calc.max(..table.map(it => measure(it).width))
-  let longest-rule = calc.max(..rules.map(it => measure(it).width))
+  let widest-index = calc.max(..indices.map(it => measure(it).width))
+  let widest-line = calc.max(..table.map(it => measure(it).width))
+  let widest-rule = calc.max(..rules.map(it => measure(it).width))
 
   let rows = array.zip(indices, table, rules)
 
   return grid(
-    columns: (longest-index, longest-line, longest-rule),
-    rows: fl-model.length,
-    align: left+horizon,
-    column-gutter: (.5em,2em),
+    columns: (widest-index, widest-line, widest-rule),
+    rows: fl-model.height,
+    align: (right+horizon, left+horizon, left+horizon),
+    column-gutter: (.75em,2em),
     stroke: none,
     ..rows.flatten()
   )

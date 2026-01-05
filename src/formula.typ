@@ -10,20 +10,20 @@
 // utility formulas
 
 // starts a subproof
-#let sps = formula(-1,"UTIL subproof start")
+#let start = formula(-1,"UTIL subproof start")
 
 // ends a subproof
-#let spe = formula(-1,"UTIL subproof end")
+#let end = formula(-1,"UTIL subproof end")
 
 // an assumption line
-#let asm = formula(-1,"UTIL assumption line")
+#let assume = formula(-1,"UTIL assumption line")
 
-#let utils = (sps, spe, asm)
+#let utils = (start, end, assume)
 
 // parse a single formula; use internally
 #let parse-single(fm, line-number) = {
 
-  if type(fm) == content { // just an equation
+  if type(fm) == content or (type(fm) == array and fm.len() == 1) { // just an equation
       return formula(
         [#line-number],
         fm,
@@ -62,7 +62,7 @@
 }
 
 // parse input to array of formulas
-#let parse(arr) = {
+#let parse(arr, indexation) = {
 
   let formulas = ()
   let line-number = 1
@@ -74,7 +74,7 @@
     }
 
     else { // is a visible formula
-      formulas.push(parse-single(line, line-number))
+      formulas.push(parse-single(line, numbering(indexation, line-number)))
       line-number += 1
     }
 

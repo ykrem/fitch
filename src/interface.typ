@@ -1,2 +1,2 @@
-#let asm-modes = ("manual", "longest", "dynamic")
-#let asm-mode-error = "Invalid asm-mode! Can only be" + asm-modes.join(" or ") + "."
+#let assumption-modes = ("fixed", "widest", "dynamic")
+#let assumption-mode-error = "Invalid assumption-mode! Can only be" + assumption-modes.join(" or ") + "."

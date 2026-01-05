@@ -1,61 +1,82 @@
-#import "lib.typ": ded
-#import "src/formula.typ": sps, spe, asm
+#import "lib.typ": proof
+#import "src/formula.typ": start, end, assume
 #import "src/frameline.typ": frameline
 
 = Examples
 
 == De Morgan: $not(p and q) tack (not p or not q)$.
 Proof (dynamic mode): 
-#ded(asm-mode: "dynamic", (
+#proof(assumption-mode: "dynamic", (
 $not(p and q)$,
-asm,
-sps,
+assume,
+start,
   $not(not p or not q)$,
-  asm,
-  sps,
+  assume,
+  start,
     $not p$,
-    asm,
+    assume,
     ($(not p or not q)$, $or I quad 3$),
     ($tack.t$, $tack.t I quad 2,4$),
-  spe,
-  ($not not p$, $not I quad 3-5$), // automatically add quad as third character?
+  end,
+  ($not not p$, $not I quad 3-5$),
   ($p$, $not E quad 6$),
-  sps,
+  start,
     $not q$,
-    asm,
+    assume,
     ($(not p or not q)$, $or I quad 8$),
     ($tack.t$, $tack.t I quad 2,9$),
-  spe,
+  end,
   ($not not q$, $not I quad 8-10$),
   ($q$, $not E quad 11$),
   ($(p and q)$, $and I quad 7,12$),
   ($tack.t$, $tack.t I quad 1,13$),
-spe,
+end,
 ($not not(not p or not q)$, $not I quad 2,14$),
 ($(not p or not q)$, $not E quad 15$),
 ))
 
-Done!
-
 #pagebreak()
 
-== Natural Deduction Rules
+== Some Natural Deduction Rules
 
-#let and-intro = ded((
+#let and-intro = proof((
   ($m$, $p$, $$),
-  // ($$,$dots.v$,$$), // have it as a predefined line?
   ($n$, $q$, $$),
-  // ($$,$dots.v$,$$),
   ($o$, $(p and q)$, $and I quad m,n$)
 ))
 
-#let and-elim = ded((
+#let and-elim = proof((
   ($m$, $(p and q)$, $$),
   ($n_1$, $p$, $and E quad m$),
   ($n_2$, $q$, $and E quad m$),
 ))
 
-#stack(dir: ltr, spacing: 15em, and-intro, and-elim)
+#let or-intro = proof((
+  ($m$, $p$, $$),
+  ($n$, $(p or q)$, $or I quad m$)
+))
+
+#let or-elim = proof((
+  ($a$, $(p or q)$, $$),
+  start,
+    ($b$, $p$, $$),
+    assume,
+    ($c$, $r$, $$),
+  end,
+  start,
+    ($d$, $q$, $$),
+    assume,
+    ($e$, $r$, $$),
+  end,
+  ($f$, $r$, $or E quad a, b-c, d-e$)
+))
+
+#stack(
+  dir: ttb,
+  spacing: 5em,
+  stack(dir: ltr, spacing: 15em, and-intro, and-elim),
+  stack(dir: ltr, spacing: 15em, or-intro, or-elim)
+)
 
 // note how (it seems as) the ones with paren. are further to the right. Idk if true, but consider.
 
@@ -64,20 +85,20 @@ Done!
 
 == Excluded Middle: $tack (p or not p)$
 
-#ded((
-sps,
+#proof((
+start,
   $not (p or not p)$,
-  asm,
-  sps,
+  assume,
+  start,
     $p$,
-    asm,
+    assume,
     ($(p or not p)$, $or I quad 2$),
     ($tack.t$, $tack.t I quad 1,3$),
-  spe,
+  end,
   ($not p$, $not I quad 2-4$),
   ($(p or not p)$, $or I quad 5$),
   ($tack.t$, $tack.t I quad 1,6$),
-spe,
+end,
 ($not not (p or not p)$, $not I quad 1-7$),
 ($p or not p$, $not E quad 8$)
 ))

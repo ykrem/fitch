@@ -1,10 +1,10 @@
 #import "src/formula.typ": *
-#import "src/frameline.typ": *
 #import "src/interface.typ": *
+#import "src/frameline.typ": *
 #import "src/chart.typ": *
 
-#let ded(frameline: frameline(), asm-mode: "manual", formulas) = {
+#let proof(frameline: frameline(), assumption-mode: "fixed", indexation: "1", proof) = {
   
-  assert(asm-mode in asm-modes, message: asm-mode-error)
-  chart(frameline, asm-mode, parse(formulas))
+  assert(assumption-mode in assumption-modes, message: assumption-mode-error)
+  chart(frameline, assumption-mode, parse(proof, indexation))
 }
