@@ -10,7 +10,7 @@
 
   for line in lines {
 
-    if line == start {
+    if line == open {
 
       if is-assume.last() {
         let fl = fl-model
@@ -23,7 +23,7 @@
 
     }
 
-    else if line == end {
+    else if line == close {
       
       let _ = new.pop()
       let _ = is-assume.pop()
@@ -50,22 +50,22 @@
 // (internal use) returns an array of the ranges of the assumptions' indices in the proof
 #let assumption-ranges(lines) = {
 
-  let starts = if lines.first() == start {()} else {(0,)}
+  let opens = if lines.first() == open {()} else {(0,)}
   let assumes = ()
   let equation-counter = 0
 
   for line in lines {
 
-    if line == start {starts.push(equation-counter)}
+    if line == open {opens.push(equation-counter)}
     else if line == assume {assumes.push(equation-counter)}
     else if line not in utils {equation-counter += 1}
 
   }
 
-  return array.zip(starts,assumes)
+  return array.zip(opens,assumes)
   
 
-  // note: I think it only works if an assume comes after every start, which is syntactically required, but won't always be the case, such as while writing. Requires input verification or handling or the qed idea or a logic that makes it work in more cases. 
+  // see roadmap.md for notes
 
 }
 

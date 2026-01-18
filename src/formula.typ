@@ -9,16 +9,16 @@
 
 // utility formulas
 
-// starts a subproof
-#let start = formula(-1,"UTIL subproof start")
+// opens a subproof
+#let open = formula(-1,"UTIL subproof open")
 
-// ends a subproof
-#let end = formula(-1,"UTIL subproof end")
+// closes a subproof
+#let close = formula(-1,"UTIL subproof close")
 
 // an assumption line
 #let assume = formula(-1,"UTIL assumption line")
 
-#let utils = (start, end, assume)
+#let utils = (open, close, assume)
 
 // parse a single formula; use internally
 #let parse-single(fm, line-number) = {
@@ -87,7 +87,7 @@
   /* why does this exist?
   let last = formulas.last()
 
-  assert((last not in utils) or (last == spe), message: "Can't end the proof with a utility line other than spe!")
+  assert((last not in utils) or (last == spe), message: "Can't close the proof with a utility line other than spe!")
   */
 
   return formulas
