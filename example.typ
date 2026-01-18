@@ -1,39 +1,97 @@
 #import "lib.typ": proof
-#import "src/formula.typ": start, end, assume
-#import "src/framing.typ": framing
+#import "src/formula.typ": open, close, assume
 
 = Examples
 
-== De Morgan: $not(p and q) tack (not p or not q)$.
-Proof (dynamic mode): 
-#proof(assumption-mode: "dynamic", (
+\
+
+#let de-morgan = [
+
+== De Morgan: $not(p and q) tack (not p or not q)$
+Proof (dynamic-single mode): 
+
+#proof(assumption-mode: "dynamic-single", (
 $not(p and q)$,
 assume,
-start,
+open,
   $not(not p or not q)$,
   assume,
-  start,
+  open,
     $not p$,
     assume,
     ($(not p or not q)$, $or I quad 3$),
     ($tack.t$, $tack.t I quad 2,4$),
-  end,
+  close,
   ($not not p$, $not I quad 3-5$),
   ($p$, $not E quad 6$),
-  start,
+  open,
     $not q$,
     assume,
     ($(not p or not q)$, $or I quad 8$),
     ($tack.t$, $tack.t I quad 2,9$),
-  end,
+  close,
   ($not not q$, $not I quad 8-10$),
   ($q$, $not E quad 11$),
   ($(p and q)$, $and I quad 7,12$),
   ($tack.t$, $tack.t I quad 1,13$),
-end,
+close,
 ($not not(not p or not q)$, $not I quad 2,14$),
 ($(not p or not q)$, $not E quad 15$),
 ))
+]
+
+
+#let ex-middle = [
+
+== Excluded Middle: $tack (p or not p)$
+
+#proof((
+open,
+  $not (p or not p)$,
+  assume,
+  open,
+    $p$,
+    assume,
+    ($(p or not p)$, $or I quad 2$),
+    ($tack.t$, $tack.t I quad 1,3$),
+  close,
+  ($not p$, $not I quad 2-4$),
+  ($(p or not p)$, $or I quad 5$),
+  ($tack.t$, $tack.t I quad 1,6$),
+close,
+($not not (p or not p)$, $not I quad 1-7$),
+($p or not p$, $not E quad 8$)
+))
+]
+
+#let non-contra =  [
+== Non-Contradiction: $tack.r not (p and not p)$
+#proof((
+open,
+  $(p and not p)$,
+  assume,
+  ($p$, $and E  quad 1$),
+  ($not p$, $and E  quad 2$),
+  ($tack.t$, $tack.t I quad 1,2$),
+ close,
+($not (p and not p)$, $not I quad 1-4$)
+))
+]
+
+#context stack(
+  dir: ltr,
+  spacing: 6em,
+  de-morgan, 
+  stack(
+    dir: ttb,
+    spacing: measure(de-morgan).height - measure(ex-middle).height - measure(non-contra).height,
+    ex-middle,
+    non-contra
+  )
+)
+
+
+
 
 #pagebreak()
 
@@ -58,16 +116,16 @@ end,
 
 #let or-elim = proof(indexation: "a", (
   $(p or q)$,
-  start,
+  open,
     $p$,
     assume,
     $r$,
-  end,
-  start,
+  close,
+  open,
     $q$,
     assume,
     $r$,
-  end,
+  close,
   ($r$, $or E quad a, b-c, d-e$)
 ))
 
@@ -79,26 +137,3 @@ end,
 )
 
 // note how (it seems as) the ones with paren. are further to the right. Idk if true, but consider.
-
-#pagebreak()
-
-
-== Excluded Middle: $tack (p or not p)$
-
-#proof((
-start,
-  $not (p or not p)$,
-  assume,
-  start,
-    $p$,
-    assume,
-    ($(p or not p)$, $or I quad 2$),
-    ($tack.t$, $tack.t I quad 1,3$),
-  end,
-  ($not p$, $not I quad 2-4$),
-  ($(p or not p)$, $or I quad 5$),
-  ($tack.t$, $tack.t I quad 1,6$),
-end,
-($not not (p or not p)$, $not I quad 1-7$),
-($p or not p$, $not E quad 8$)
-))

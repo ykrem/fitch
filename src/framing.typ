@@ -13,7 +13,7 @@
 }
 
 // display a framing
-#let fl-display(fl) = {
+#let framing-display(fl) = {
 
   let height = fl.height
   if fl.is-short {height -= .5em}

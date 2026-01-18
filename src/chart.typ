@@ -1,56 +1,56 @@
-#import "framing.typ": *
-#import "formula.typ": * // constrain later
+#import "framing.typ": framing, framing-display
+#import "formula.typ": formula, open, close, assume, utils
 
-// returns an array of each formula's array of frame lines; core logic of the library.
-#let frame-as-array(lines, fl-model) = {
+// return the framing of the lines in the proof as an array. Core logic of the library.
+#let frame-as-array(lines, framing-model) = {
 
-  let frm = ()
-  let new = (fl-model,)
-  let is-assume = (false,)
+  let frame = ()
+  let new = (framing-model,)
+  let is-assumption-line = (false,)
 
   for line in lines {
 
     if line == open {
 
-      if is-assume.last() {
-        let fl = fl-model
-        fl.insert("is-short", true)
-        new.push(fl)
+      if is-assumption-line.last() {
+        let temp = framing-model // as it's not a reference but a dictionary
+        temp.insert("is-short", true)
+        new.push(temp)
         }
         
-      else {new.push(fl-model)}
-      is-assume.push(false)
+      else {new.push(framing-model)}
+      is-assumption-line.push(false)
 
     }
 
     else if line == close {
-      
       let _ = new.pop()
-      let _ = is-assume.pop()
-      
+      let _ = is-assumption-line.pop()
     }
 
     else if line == assume {
-      frm.last().last().insert("is-assume", true)
-      is-assume.last() = true
+      frame.last().last().insert("is-assume", true)
+      is-assumption-line.last() = true
     }
 
     // is a visible line
     else {
-      frm.push(new)
+      frame.push(new)
       new.last().insert("is-short", false)
     }
 
   }
 
-  return frm
+  return frame
 
 }
 
-// (internal use) returns an array of the ranges of the assumptions' indices in the proof
+// returns an array of integer pairs, each pair marking the start and end positions of a series of assumptions within the proof.
 #let assumption-ranges(lines) = {
 
-  let opens = if lines.first() == open {()} else {(0,)}
+  // proofs must start with assumptions, but they could also be inside subproofs - taking it into account below.
+  let opens = if lines.first() == open {()} else {(0,)} 
+
   let assumes = ()
   let equation-counter = 0
 
@@ -65,89 +65,99 @@
   return array.zip(opens,assumes)
   
 
-  // see roadmap.md for notes
+  // see roadmap.md @later for notes regarding this function.
 
 }
 
-// constructs the chart
-#let chart(fl-model, assumption-mode, lines) = context {
+// constructs the diagram
+#let diagram(framing-model, assumption-mode, lines) = context {
 
-
-
-  let arr = frame-as-array(lines, fl-model)
-  let formulas = lines.filter(x => x not in utils)
+  let frame = frame-as-array(lines, framing-model)
+  let formulas = lines.filter(line => line not in utils)
   
   if assumption-mode == "dynamic" {
     
   let assumption-ranges = assumption-ranges(lines)
-  let assumption-chunks = assumption-ranges.map(it => 
-  formulas.slice(it.first(), it.last()))
+  let assumption-chunks = assumption-ranges.map(
+    range => formulas.slice(range.first(), range.last())
+    )
 
-  let widest-per-range = assumption-chunks.map(it =>
-    calc.max(..it.map(x => 
-       measure(x.equation).width)
+  let widest-per-range = assumption-chunks.map(
+    chunk =>
+    calc.max(..chunk.map(line => 
+       measure(line.equation).width)
        )
-     ).rev() // reversing allows to use .pop() concisely
+     ).rev() // reversing allows using array.pop() concisely
 
     for (_, to) in assumption-ranges {
-      arr.at(to - 1).last().insert("assume-length", widest-per-range.pop() + 1em)
+      frame.at(to - 1).last().insert("assume-length", widest-per-range.pop() + 1em)
     }
 
   }
 
   else if assumption-mode == "dynamic-single" {
-    for i in range(arr.len()) {
-      arr.at(i).last().insert("assume-length", measure(formulas.at(i).equation).width + 1em) // cursed, couldn't find another way
+    for i in range(frame.len()) {
+      frame.at(i).last().insert("assume-length", measure(formulas.at(i).equation).width + 1em) // cursed, couldn't find another way
     }
   }
   
   else if assumption-mode == "widest" {
-    let widest = calc.max(..formulas.map(it => measure(it.equation).width))
-    for i in range(arr.len()) {
-      arr.at(i).last().insert("assume-length", widest + 1em)
+    let widest = calc.max(..formulas.map(line => measure(line.equation).width))
+    for i in range(frame.len()) {
+      frame.at(i).last().insert("assume-length", widest + 1em)
     }
   }
 
-  let merged = array.zip(arr, formulas)
-  let table = ()
+  // else is fixed
 
-  for (fl-row, formula) in merged {
+  let zipped = array.zip(frame, formulas)
+  let diagram = ()
 
-    let partition = fl-row.map(it => fl-model.thick + .75em) // length partition of the row
-    partition.last() = .375em // last framing in row
-    partition.push(calc.max(
-      measure(formula.equation).width,
-      if fl-row.last().is-assume {measure(h(fl-row.last().assume-length)).width}
-      else {-1pt}
+  for (frame-row, formula) in zipped {
+
+    // structure of the row
+    let row-partition = frame-row.map(_ => framing-model.thick + .75em)
+    
+    // spacing between the frame and the equations
+    let frame-to-eq = .375em
+    row-partition.last() = frame-to-eq
+
+    // width of the line (max of the width of the equation and the assumption line, if exists)
+    row-partition.push(
+      calc.max(
+        measure(formula.equation).width,
+        if frame-row.last().is-assume {
+          (frame-row.last().assume-length - frame-to-eq).to-absolute()
+          }
+        else {-1pt}
       )) // cursed
-    // length of equation + frame
 
     let new-line = grid(
-      columns: partition,
-      rows: fl-model.height,
+      columns: row-partition,
+      rows: framing-model.height,
       align: left+bottom,
       stroke: none,
-      ..fl-row.map(it => fl-display(it)),
+      ..frame-row.map(row => framing-display(row)),
       grid.cell(align: left+horizon, formula.equation)
 
     )
-    table.push(new-line)
+    diagram.push(new-line)
   }
 
-  let indices = formulas.map(it => it.index)
-  let rules = formulas.map(it => it.rule)
+  let indices = formulas.map(line => line.index)
+  let rules = formulas.map(line => line.rule)
 
-  let widest-index = calc.max(..indices.map(it => measure(it).width))
-  let widest-line = calc.max(..table.map(it => measure(it).width))
-  let widest-rule = calc.max(..rules.map(it => measure(it).width))
+  let widest-index = calc.max(..indices.map(index => measure(index).width))
+  let widest-line = calc.max(..diagram.map(line => measure(line).width))
+  let widest-rule = calc.max(..rules.map(rule => measure(rule).width))
 
-  let rows = array.zip(indices, table, rules)
+  let rows = array.zip(indices, diagram, rules)
 
   return grid(
     columns: (widest-index, widest-line, widest-rule),
-    rows: fl-model.height,
+    rows: framing-model.height,
     align: (right+horizon, left+horizon, left+horizon),
-    column-gutter: (.75em,2em),
+    column-gutter: (.75em,1em), // space between index-frame, frame-rules
     stroke: none,
     ..rows.flatten()
   )
