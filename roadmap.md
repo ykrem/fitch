@@ -1,12 +1,14 @@
 Submit to [Typst Universe](https://github.com/typst/packages) when ready.
 
 # 1.0
-- write the [README](README.md) and manual.
-- constrain imports.
-- minimize [lib.typ](lib.typ); constrain imports.
+- rename `proof` to `fitch` or anything else?
+- write the [README](README.md) and [manual](manual.typ).
+- require importing all utility lines together with `proof`, somehow. import them in the `proof` function?
+- minimize [lib.typ](lib.typ), restrict imports.
 - rethink how framing works in relation to the "fixed" mode. Perhaps return to a length instead, recieving the other design parameters independently, or not at all.
     - So that's how it'll work: in 1.0 there will be no `framing` parameter, and instead of `"fixed"` it may take a length... which I'd have to break eventually. not good. So keep fixed; make "framing" a length. Problem solved!
-- remove [README.typ](README.typ) from [.gitignore](.gitignore)
+
+# 1.0.1: minor additions
 - more predefined lines? contadiction, dots, etc.
 - strengthen input verification & error messages.
 
@@ -14,7 +16,7 @@ Submit to [Typst Universe](https://github.com/typst/packages) when ready.
 # 1.1: Dynamic proper and structural verification
 - clean the library, especially how the `dynamic` mode is implemented.
 - "activate" `dynamic`.
-- (related) consider "structural validation" (equal number of opennings and closings, no double assumptions, anything else?)
+- (related) consider "structural validation" (equal number of opennings and closings, no double xmptions, anything else?)
     - solutions:
         1. add it as it is - get used to "writing correctly".
         2. give it up - let the user do "what they wish".
@@ -33,11 +35,9 @@ Submit to [Typst Universe](https://github.com/typst/packages) when ready.
 # Later
 - asm-mode is either constant or dynamic (or "widest"); could maybe add some "curved length" sometime (just a composition of the measure part with some function of a domain... idk, range of the interval \(0,1\]). Perhaps "dynamic" itself should be non-linear.
 - consider rewriting the line/parsing logic - the "array polymorphism" is not ideal.
-- consider "reomving" the redundant math.quad-s
+- consider "reomving" the redundant math.quad-s, or just making rule-writing easier
 - try to utilize as much built-in functions as possible.
 - consider re-introducing "depth" into the formula object (although I'm pretty sure it'll introduce many "contextuality" problems I've had to solve) and write around it.
 - rethink how the `framing` object works. maybe use an "object library" or merge it with `formula`.
 - consider more features. open for requests if there'll be demand for it.
 - optimize for local and CLI use.
-- clean the repo.
-- maintain.
