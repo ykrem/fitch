@@ -1,14 +1,15 @@
-#import "lib.typ": proof
-#import "src/formula.typ": open, close, assume
+#import "lib.typ": *
 
 = Examples
 
 \
 
+#let x = open
+
 #let de-morgan = [
 
 == De Morgan: $not(p and q) tack (not p or not q)$
-Proof (dynamic-single mode): 
+Proof (`dynamic-single` mode): 
 
 #proof(assumption-mode: "dynamic-single", (
 $not(p and q)$,
@@ -44,8 +45,8 @@ close,
 #let ex-middle = [
 
 == Excluded Middle: $tack (p or not p)$
-
-#proof((
+Proof (`fixed` mode to `60pt`): 
+#proof(framing: 60pt, assumption-mode: "fixed", (
 open,
   $not (p or not p)$,
   assume,
@@ -66,6 +67,7 @@ close,
 
 #let non-contra =  [
 == Non-Contradiction: $tack.r not (p and not p)$
+Proof (`fixed` mode to the default `2.25em`): 
 #proof((
 open,
   $(p and not p)$,
@@ -92,7 +94,7 @@ open,
 
 
 
-
+/*
 #pagebreak()
 
 == Some Natural Deduction Rules
