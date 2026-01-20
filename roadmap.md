@@ -1,8 +1,3 @@
-Submit to [Typst Universe](https://github.com/typst/packages) when ready.
-
-# 1.0
-- write the [manual](manual.typ).
-
 # 1.0.1: minor patch?
 - more predefined lines? contadiction, dots, etc.
     - if so, adjust the examples and readme. perhaps make it automatic.
