@@ -64,7 +64,7 @@ let assumption-mode-error = "Invalid assumption mode! Can only be" + assumption-
 assert(assumption-mode in assumption-modes, message: assumption-mode-error)
 
 
-import "src/chart.typ": diagram
+import "src/diagram.typ": diagram
 import "src/formula.typ": parse
 
 diagram(framing, assumption-mode, parse(proof, indexation))
