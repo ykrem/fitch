@@ -1,5 +1,5 @@
 # fitch
-A Typst library for visualisation of [Fitch-style](https://en.wikipedia.org/wiki/Fitch_notation) proof diagrams, with custom syntax optimized for speedy writing and conciseness.
+A Typst library for visualization of [Fitch-style](https://en.wikipedia.org/wiki/Fitch_notation) proof diagrams, with custom syntax optimized for speedy writing and conciseness.
 
 While the main functionality of the library is ready, the library is still in development. See the roadmap [here](roadmap.md).
 
