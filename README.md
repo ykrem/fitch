@@ -4,7 +4,7 @@ A Typst library for visualization of [Fitch-style](https://en.wikipedia.org/wiki
 While the main functionality of the library is ready, the library is still in development. See the roadmap [here](roadmap.md).
 
 ## Usage
-For more information see the [manual](manual.pdf).
+For more information see the [manual](docs/manual.pdf).
 
 ## Example
 
