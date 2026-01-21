@@ -7,3 +7,4 @@ description = "Fitch-style proof diagrams"
 repository = "https://github.com/ykrem/fitch"
 categories = ["visualization"]
 disciplines = ["mathematics", "philosophy", "computer-science"]
+exclude = ["docs/*", "roadmap.md"]
