@@ -1,5 +1,5 @@
+#import "@preview/fitch:1.0.0": *
 #show link: it => {set text(fill: blue); underline(it)}
-#import "../lib.typ": *
 #set raw(lang: "typc")
 
 

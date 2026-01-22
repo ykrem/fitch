@@ -1,4 +1,4 @@
-#import "../lib.typ": * // replace with the relevant import
+#import "@preview/fitch:1.0.0": *
 
 = Examples
 \
